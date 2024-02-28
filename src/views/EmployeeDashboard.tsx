@@ -18,7 +18,7 @@ import {
 function EmployeeDashboard() {
   return (
     <Container component="main" maxWidth="lg" sx={{ flexGrow: 1 }}>
-      <h1>Employee Dashboard</h1>
+      <Typography>Employee Dashboard</Typography>
       <AccountManagement />
       <CanteenOperations />
       <MenuAccess />
