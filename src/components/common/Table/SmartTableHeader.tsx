@@ -14,7 +14,7 @@ interface SmartTableHeaderProps {
   order: TOrder;
   dense: boolean;
   rowCount: number;
-  ariaLabel: string;
+  ariaLabel?: string;
   numSelected: number;
   disableSelection: boolean;
   orderBy: string | number | symbol;
@@ -57,7 +57,7 @@ export default function SmartTableHeader(props: SmartTableHeaderProps) {
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
               inputProps={{
-                'aria-label': ariaLabel,
+                'aria-label': ariaLabel || '',
               }}
             />
           </TableCell>

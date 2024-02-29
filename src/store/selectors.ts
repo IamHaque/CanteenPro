@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { StoreApi, UseBoundStore } from 'zustand';
 
+import useAppStoreBase from './appStore';
 import useAuthStoreBase from './authStore';
 
 type WithSelectors<S> = S extends { getState: () => infer T }
@@ -19,6 +20,7 @@ const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
   return store;
 };
 
+const useAppStore = createSelectors(useAppStoreBase);
 const useAuthStore = createSelectors(useAuthStoreBase);
 
-export { useAuthStore };
+export { useAppStore, useAuthStore };

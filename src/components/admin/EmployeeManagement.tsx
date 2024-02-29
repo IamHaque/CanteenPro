@@ -50,11 +50,11 @@ const mockEmployeeData: IEmployee[] = [
   createEmployee(20, 'Melissa Lopez', 2150),
 ];
 
-export default function EmployeeManagementTable() {
+export default function EmployeeManagement() {
   return (
     <SmartTable
       dense={false}
-      title="Employees"
+      title="All Employees"
       headCells={headCells}
       rows={mockEmployeeData}
       disableSelection={false}

@@ -1,5 +1,5 @@
-import MenuAccess from './MenuAccess';
 import AccountManagement from './AccountManagement';
-import CanteenOperations from './CanteenOperations';
+import TransactionManagement from './TransactionManagement';
+import PopularItemManagement from './PopularItemManagement';
 
-export { MenuAccess, AccountManagement, CanteenOperations };
+export { AccountManagement, TransactionManagement, PopularItemManagement };

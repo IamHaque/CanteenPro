@@ -21,7 +21,7 @@ import {
 
 // Define a generic interface for a table row
 interface ISmartTableRow {
-  [key: string]: string | number; // Allow keys to be string or number
+  [key: string]: string | number | null | undefined; // Allow keys to be string or number
 }
 
 // Extend ISmartTableRow for ISmartTable
@@ -32,7 +32,7 @@ export interface ISmartTable extends ISmartTableRow {
 interface SmartTableProps<T extends ISmartTable> {
   title: string;
   dense: boolean;
-  ariaLabel: string;
+  ariaLabel?: string;
   actionTitle?: string;
   rows: readonly T[];
   disableSelection: boolean;
@@ -126,10 +126,10 @@ export default function SmartTable<T extends ISmartTable>(
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
+      stableSort(
+        rows as readonly { [key in keyof T]: string | number }[],
+        getComparator(order, orderBy)
+      ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [rows, order, orderBy, page, rowsPerPage]
   );
 

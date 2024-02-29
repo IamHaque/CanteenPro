@@ -17,12 +17,23 @@ interface IEmployee extends ISmartTable {
 
 interface ITransaction extends ISmartTable {
   productName: string;
-  saleBy: string;
   amount: number;
   date: string;
   id: number;
+  saleBy?: string;
+  quantity?: number;
 }
 
+interface IProduct extends ISmartTable {
+  id: number;
+  name: string;
+  img?: string;
+  price: number;
+  category: string;
+  description: string;
+}
+
+// Function to create an employee object
 function createEmployee(id: number, name: string, balance: number): IEmployee {
   return {
     id,
@@ -31,7 +42,8 @@ function createEmployee(id: number, name: string, balance: number): IEmployee {
   };
 }
 
-function createTransaction(
+// Function to create a transaction object
+function createAdminTransaction(
   id: number,
   productName: string,
   saleBy: string,
@@ -44,6 +56,40 @@ function createTransaction(
     saleBy: saleBy,
     amount: amount,
     date: date,
+  };
+}
+
+// Function to create a transaction object
+function createEmployeeTransaction(
+  id: number,
+  productName: string,
+  quantity: number,
+  amount: number,
+  date: string
+): ITransaction {
+  return {
+    id: id,
+    productName: productName,
+    quantity: quantity,
+    amount: amount,
+    date: date,
+  };
+}
+
+// Function to create a product object
+function createProduct(
+  id: number,
+  name: string,
+  price: number,
+  category: string,
+  description: string
+): IProduct {
+  return {
+    id: id,
+    name: name,
+    price: price,
+    category: category,
+    description: description,
   };
 }
 
@@ -92,9 +138,17 @@ function stableSort<T>(
 export {
   stableSort,
   getComparator,
+  createProduct,
   createEmployee,
-  createTransaction,
   descendingComparator,
+  createAdminTransaction,
+  createEmployeeTransaction,
 };
 
-export type { TOrder, IEmployee, ITransaction, ISmartTableHeaderCell };
+export type {
+  TOrder,
+  IProduct,
+  IEmployee,
+  ITransaction,
+  ISmartTableHeaderCell,
+};

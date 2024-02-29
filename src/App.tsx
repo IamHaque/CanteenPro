@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Route,
   Routes,
@@ -17,16 +18,25 @@ import {
   EmployeeDashboard,
 } from './views';
 
-import { useAuthStore } from './store';
-
-const defaultTheme = createTheme();
+import { useAppStore, useAuthStore } from './store';
 
 function App() {
   const user = useAuthStore.use.user();
+  const isDarkMode = useAppStore.use.isDarkMode();
   const isAuthenticated = useAuthStore.use.isAuthenticated();
 
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: isDarkMode ? 'dark' : 'light',
+        },
+      }),
+    [isDarkMode]
+  );
+
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
 
       <Box

@@ -7,10 +7,13 @@ import {
   Container,
   Link,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@mui/material';
+import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded';
+import ModeNightRoundedIcon from '@mui/icons-material/ModeNightRounded';
 
-import { useAuthStore } from '../../store';
+import { useAppStore, useAuthStore } from '../../store';
 
 type NavLink = {
   url: string;
@@ -29,6 +32,8 @@ const NAV_LINKS: NavLink[] = [
 function Header() {
   const user = useAuthStore.use.user();
   const logout = useAuthStore.use.logout();
+  const isDarkMode = useAppStore.use.isDarkMode();
+  const toggleDarkMode = useAppStore.use.toggleDarkMode();
   const isAuthenticated = useAuthStore.use.isAuthenticated();
 
   const renderNavLinks = (link: NavLink) => {
@@ -55,7 +60,7 @@ function Header() {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
             to="/"
@@ -82,6 +87,28 @@ function Header() {
               justifyContent: 'flex-end',
             }}
           >
+            <Tooltip title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}>
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => {
+                  toggleDarkMode();
+                }}
+                aria-label="Button to toggle theme"
+                sx={{
+                  p: '4px',
+                  color: 'white',
+                  minWidth: '48px',
+                }}
+              >
+                {isDarkMode ? (
+                  <WbSunnyRoundedIcon fontSize="small" />
+                ) : (
+                  <ModeNightRoundedIcon fontSize="small" />
+                )}
+              </Button>
+            </Tooltip>
+
             {NAV_LINKS.map(renderNavLinks)}
 
             {isAuthenticated && (
