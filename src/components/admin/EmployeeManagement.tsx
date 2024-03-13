@@ -1,10 +1,14 @@
+import React from 'react';
+
 import {
   IEmployee,
-  ISmartTableHeaderCell,
   createEmployee,
+  ISmartTableHeaderCell,
 } from '../../utils/table';
 
 import SmartTable from '../common/Table/SmartTable';
+import { useSnackbar } from '../../hooks';
+import AddEmployeeModal from './AddEmployeeModal';
 
 const headCells: ISmartTableHeaderCell[] = [
   {
@@ -51,22 +55,40 @@ const mockEmployeeData: IEmployee[] = [
 ];
 
 export default function EmployeeManagement() {
+  const [open, setOpen] = React.useState(false);
+  const { SnackbarComponent, handleClick } = useSnackbar();
+
+  const handleAppEmployeeModalOpen = () => setOpen(true);
+  const handleAppEmployeeModalClose = () => setOpen(false);
+
   return (
-    <SmartTable
-      dense={false}
-      title="All Employees"
-      headCells={headCells}
-      rows={mockEmployeeData}
-      disableSelection={false}
-      disablePagination={false}
-      ariaLabel="Select all Employees"
-      actionTitle="Add Employee"
-      onActionClick={() => {
-        console.log('onActionClick');
-      }}
-      onDeleteClick={() => {
-        console.log('onDeleteClick');
-      }}
-    />
+    <React.Fragment>
+      <SmartTable
+        dense={false}
+        title="All Employees"
+        headCells={headCells}
+        rows={mockEmployeeData}
+        disableSelection={false}
+        disablePagination={false}
+        ariaLabel="Select all Employees"
+        actionTitle="Add Employee"
+        onActionClick={() => {
+          handleAppEmployeeModalOpen();
+        }}
+        onDeleteClick={() => {
+          console.log('onDeleteClick');
+        }}
+      />
+
+      <AddEmployeeModal
+        open={open}
+        handleClose={handleAppEmployeeModalClose}
+        handleSuccess={() => {
+          handleClick('success', 'New Employee added!', 3000);
+        }}
+      />
+
+      <SnackbarComponent />
+    </React.Fragment>
   );
 }

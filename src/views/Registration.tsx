@@ -26,12 +26,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import useApiRequest from '../hooks/api.hook';
+import { LoginApiResponse } from '../utils/auth.types';
 
 export default function SignUp() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { data, loading, makeRequest } = useApiRequest<any>();
+  const { data, loading, makeRequest } = useApiRequest<LoginApiResponse>();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -95,7 +96,7 @@ export default function SignUp() {
                 label="Full Name"
                 autoComplete="given-name"
                 helperText={data?.error?.validationErrors?.name?.[0]}
-                error={data?.error?.validationErrors?.name?.length > 0}
+                error={data?.error?.validationErrors?.name !== undefined}
               />
             </Grid>
 
@@ -105,17 +106,18 @@ export default function SignUp() {
                 fullWidth
                 id="email"
                 name="email"
+                type="email"
                 autoComplete="email"
                 label="Email Address"
                 helperText={data?.error?.validationErrors?.email?.[0]}
-                error={data?.error?.validationErrors?.email?.length > 0}
+                error={data?.error?.validationErrors?.email !== undefined}
               />
             </Grid>
 
             <Grid item xs={12}>
               <FormControl
                 fullWidth
-                error={data?.error?.validationErrors?.password?.length > 0}
+                error={data?.error?.validationErrors?.password !== undefined}
               >
                 <InputLabel htmlFor="component-outlined">Password *</InputLabel>
                 <OutlinedInput
@@ -157,7 +159,7 @@ export default function SignUp() {
                 name="password2"
                 label="Confirm Password"
                 helperText={data?.error?.validationErrors?.password2?.[0]}
-                error={data?.error?.validationErrors?.password2?.length > 0}
+                error={data?.error?.validationErrors?.password2 !== undefined}
               />
             </Grid>
           </Grid>

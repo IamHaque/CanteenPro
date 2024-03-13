@@ -18,12 +18,12 @@ import {
   EmployeeDashboard,
 } from './views';
 
-import useApiRequest from './hooks/api.hook';
+import { useApiRequest } from './hooks';
 import { useAppStore, useAuthStore } from './store';
 import { LoginWithTokenApiResponse } from './utils/auth.types';
 
 function App() {
-  const { data, makeRequest } = useApiRequest();
+  const { data, makeRequest } = useApiRequest<LoginWithTokenApiResponse>();
   const [isInitialPageLoad, setIsInitialPageLoad] = useState(true);
 
   const user = useAuthStore.use.user();
@@ -71,11 +71,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if ((data as LoginWithTokenApiResponse)?.data) {
+    if (data?.data) {
       // Extract user data from the response
-      const { name, userId, cartId, email, balance, isAdmin } = (
-        data as LoginWithTokenApiResponse
-      ).data;
+      const { name, userId, cartId, email, balance, isAdmin } = data.data;
 
       // Store user data locally
       login({ name, userId, cartId, email, balance, isAdmin });

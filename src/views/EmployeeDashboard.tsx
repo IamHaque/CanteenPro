@@ -6,7 +6,11 @@ import {
   PopularItemManagement,
 } from '../components/employee';
 
+import { useAuthStore } from '../store';
+
 function EmployeeDashboard() {
+  const user = useAuthStore.use.user();
+
   return (
     <Box
       component="main"
@@ -39,7 +43,7 @@ function EmployeeDashboard() {
                   Welcome,
                 </Typography>
                 <Typography component="p" variant="h4">
-                  John Doe
+                  {user?.name || 'John Doe'}
                 </Typography>
               </Paper>
             </Grid>
@@ -61,7 +65,7 @@ function EmployeeDashboard() {
                   Wallet Balance
                 </Typography>
                 <Typography component="p" variant="h4">
-                  $ 3,024.00
+                  $ {user?.balance || 0}
                 </Typography>
               </Paper>
             </Grid>

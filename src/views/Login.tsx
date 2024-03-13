@@ -27,13 +27,14 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import { useAuthStore } from '../store';
 import useApiRequest from '../hooks/api.hook';
+import { LoginApiResponse } from '../utils/auth.types';
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const login = useAuthStore.use.login();
-  const { data, loading, makeRequest } = useApiRequest<any>();
+  const { data, loading, makeRequest } = useApiRequest<LoginApiResponse>();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -95,16 +96,17 @@ export default function SignIn() {
                 required
                 fullWidth
                 id="email"
+                type="email"
                 name="email"
                 autoComplete="email"
                 label="Email Address"
                 helperText={data?.error?.message}
-                error={data?.error?.message?.length > 0}
+                error={data?.error?.message !== undefined}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth error={data?.error?.message?.length > 0}>
+              <FormControl fullWidth error={data?.error?.message !== undefined}>
                 <InputLabel htmlFor="component-outlined">Password *</InputLabel>
                 <OutlinedInput
                   required
