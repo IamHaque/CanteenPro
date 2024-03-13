@@ -1,42 +1,75 @@
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import {
-  Avatar,
   Box,
-  Button,
-  Container,
-  FormControlLabel,
   Grid,
   Link,
-  Switch,
+  Avatar,
+  Button,
+  Container,
   TextField,
   Typography,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
 } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { LoadingButton } from '@mui/lab';
 
-import { User, useAuthStore } from '../store';
+import SaveIcon from '@mui/icons-material/Save';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
+import { useAuthStore } from '../store';
+import useApiRequest from '../hooks/api.hook';
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
   const login = useAuthStore.use.login();
+  const { data, loading, makeRequest } = useApiRequest<any>();
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsAdmin(event.target.checked);
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    const userData: User = {
-      isAdmin: isAdmin,
-      email: data.get('email')?.toString(),
-      password: data.get('password')?.toString(),
-    };
-    login(userData);
   };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    await makeRequest('http://localhost:3200/api/v1/user/login', 'POST', {
+      email: formData.get('email'),
+      password: formData.get('password'),
+    });
+  };
+
+  useEffect(() => {
+    if (data?.data) {
+      // Extract user data from the response
+      const { name, userId, cartId, email, balance, isAdmin, token } =
+        data.data;
+
+      // Store user data locally
+      login({ name, userId, cartId, email, balance, isAdmin });
+
+      // Store the token in local storage for future use
+      localStorage.setItem('token', token);
+      login(data?.data);
+
+      // Redirect to the home page upon successful login
+      navigate('/');
+    }
+  }, [data]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -56,44 +89,69 @@ export default function SignIn() {
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                name="isAdmin"
-                checked={isAdmin}
-                onChange={handleChange}
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                id="email"
+                name="email"
+                autoComplete="email"
+                label="Email Address"
+                helperText={data?.error?.message}
+                error={data?.error?.message?.length > 0}
               />
-            }
-            label="Login as Admin"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl fullWidth error={data?.error?.message?.length > 0}>
+                <InputLabel htmlFor="component-outlined">Password *</InputLabel>
+                <OutlinedInput
+                  required
+                  id="password"
+                  name="password"
+                  label="Password"
+                  autoComplete="new-password"
+                  type={showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                <FormHelperText>{data?.error?.message}</FormHelperText>
+              </FormControl>
+            </Grid>
+          </Grid>
+
+          <Box sx={{ mt: 3, mb: 2 }}>
+            {loading ? (
+              <LoadingButton
+                loading
+                fullWidth
+                variant="contained"
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+              >
+                Signing Up
+              </LoadingButton>
+            ) : (
+              <Button fullWidth type="submit" variant="contained">
+                Sign In
+              </Button>
+            )}
+          </Box>
 
           <Grid container justifyContent="flex-end">
             <Grid item>

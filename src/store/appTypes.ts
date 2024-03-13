@@ -1,9 +1,9 @@
 type AppStateData = {
-  isDarkMode: boolean;
+  themeMode: 'dark' | 'light';
 };
 
 interface AppState extends AppStateData {
-  toggleDarkMode: () => void;
+  setThemeMode: (themeMode: 'dark' | 'light') => void;
 }
 
 export type { AppState, AppStateData };

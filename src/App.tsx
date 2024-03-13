@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Route,
   Routes,
@@ -18,22 +18,69 @@ import {
   EmployeeDashboard,
 } from './views';
 
+import useApiRequest from './hooks/api.hook';
 import { useAppStore, useAuthStore } from './store';
+import { LoginWithTokenApiResponse } from './utils/auth.types';
 
 function App() {
+  const { data, makeRequest } = useApiRequest();
+  const [isInitialPageLoad, setIsInitialPageLoad] = useState(true);
+
   const user = useAuthStore.use.user();
-  const isDarkMode = useAppStore.use.isDarkMode();
+  const login = useAuthStore.use.login();
+  const themeMode = useAppStore.use.themeMode();
+  const setThemeMode = useAppStore.use.setThemeMode();
   const isAuthenticated = useAuthStore.use.isAuthenticated();
 
   const theme = React.useMemo(
     () =>
       createTheme({
         palette: {
-          mode: isDarkMode ? 'dark' : 'light',
+          mode: themeMode === 'dark' ? 'dark' : 'light',
         },
       }),
-    [isDarkMode]
+    [themeMode]
   );
+
+  useEffect(() => {
+    if (!isInitialPageLoad) {
+      localStorage.setItem('themeMode', themeMode);
+    }
+  }, [themeMode, isInitialPageLoad]);
+
+  useEffect(() => {
+    const setUserThemeModel = () => {
+      const localThemeMode = localStorage.getItem('themeMode');
+      if (localThemeMode === 'dark' || localThemeMode === 'light') {
+        setThemeMode(localThemeMode);
+      }
+    };
+
+    const validateToken = async () => {
+      await makeRequest(
+        'http://localhost:3200/api/v1/user/loginWithToken',
+        'GET'
+      );
+    };
+
+    setUserThemeModel();
+    if (!isAuthenticated) {
+      validateToken();
+    }
+    setIsInitialPageLoad(false);
+  }, []);
+
+  useEffect(() => {
+    if ((data as LoginWithTokenApiResponse)?.data) {
+      // Extract user data from the response
+      const { name, userId, cartId, email, balance, isAdmin } = (
+        data as LoginWithTokenApiResponse
+      ).data;
+
+      // Store user data locally
+      login({ name, userId, cartId, email, balance, isAdmin });
+    }
+  }, [data]);
 
   return (
     <ThemeProvider theme={theme}>

@@ -1,7 +1,11 @@
 type User = {
   isAdmin?: boolean;
+  name?: string | undefined;
   email: string | undefined;
-  password: string | undefined;
+  userId?: string | undefined;
+  cartId?: string | undefined;
+  balance?: number | undefined;
+  password?: string | undefined;
 };
 
 type AuthStateData = {
