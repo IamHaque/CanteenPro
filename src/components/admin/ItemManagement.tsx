@@ -12,6 +12,7 @@ import {
   DeletedProductApiResponse,
 } from '../../utils/auth.types';
 import AddEditProductModal from './AddEditProductModal';
+import AddToProductOfTheDayModal from './AddToProductOfTheDayModal';
 
 const headCells: ISmartTableHeaderCell[] = [
   {
@@ -55,6 +56,7 @@ const headCells: ISmartTableHeaderCell[] = [
 export default function ItemManagement() {
   const [refreshCount, setRefreshCount] = useState(0);
   const [productData, setProductData] = useState<IProduct[]>([]);
+  const [openAddToPOTDModal, setOpenAddToPOTDModal] = useState(false);
   const [productDataToUpdate, setProductDataToUpdate] = useState<IProduct>();
   const [openAddEditProductModal, setOpenAddEditProductModal] = useState(false);
 
@@ -64,6 +66,7 @@ export default function ItemManagement() {
     AllProductApiResponse | DeletedProductApiResponse
   >();
 
+  const handleAddToPOTDModalClose = () => setOpenAddToPOTDModal(false);
   const handleAddEditProductModalOpen = () => setOpenAddEditProductModal(true);
   const handleAddEditProductModalClose = () =>
     setOpenAddEditProductModal(false);
@@ -81,7 +84,8 @@ export default function ItemManagement() {
 
         if (!productToAdd) return;
 
-        console.log(productToAdd);
+        setProductDataToUpdate(productToAdd);
+        setOpenAddToPOTDModal(true);
       },
     },
     {
@@ -190,6 +194,15 @@ export default function ItemManagement() {
         handleSuccess={() => {
           handleClick('success', 'Product added!', 3000);
           setRefreshCount(refreshCount + 1);
+        }}
+      />
+
+      <AddToProductOfTheDayModal
+        open={openAddToPOTDModal}
+        productData={productDataToUpdate}
+        handleClose={handleAddToPOTDModalClose}
+        handleSuccess={() => {
+          handleClick('success', 'Product added!', 3000);
         }}
       />
 

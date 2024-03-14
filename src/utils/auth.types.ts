@@ -59,6 +59,18 @@ interface AllProductApiResponse {
   };
 }
 
+interface AllPOTDData {
+  quantity: number;
+  product: AllProductData;
+}
+
+interface AllPOTDApiResponse {
+  data: {
+    items: AllPOTDData[];
+    totalCount: number;
+  };
+}
+
 interface AllUserApiResponse {
   data: {
     items: AllUserData[];
@@ -112,4 +124,5 @@ export type {
   InsertedProductApiResponse,
   UpdatedProductApiResponse,
   DeletedProductApiResponse,
+  AllPOTDApiResponse,
 };

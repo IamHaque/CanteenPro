@@ -37,6 +37,11 @@ interface IProduct extends ISmartTable {
   description: string;
 }
 
+interface IPOTD {
+  quantity: number;
+  product: IProduct;
+}
+
 // Function to create a transaction object
 function createAdminTransaction(
   id: number,
@@ -126,5 +131,6 @@ export type {
   IProduct,
   IEmployee,
   ITransaction,
+  IPOTD,
   ISmartTableHeaderCell,
 };

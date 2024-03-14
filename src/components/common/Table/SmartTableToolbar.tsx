@@ -76,6 +76,7 @@ export default function SmartTableToolbar(props: SmartTableToolbarProps) {
               onClick={() => {
                 if (!button.onClick) return;
                 button.onClick(selected);
+                setSelected([]);
               }}
             >
               {button.icon}

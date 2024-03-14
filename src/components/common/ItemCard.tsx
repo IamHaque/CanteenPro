@@ -22,8 +22,8 @@ export default function ItemCard(props: ItemCardProps) {
     <Card>
       <CardMedia
         component="img"
-        alt={product.name}
-        image={product.img}
+        alt={product.title}
+        image={product.thumbnail}
         sx={{
           aspectRatio: '4/3',
           objectFit: 'cover',
@@ -33,7 +33,7 @@ export default function ItemCard(props: ItemCardProps) {
 
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {product.name}
+          {product.title}
         </Typography>
 
         <Typography variant="body2" color="text.secondary">
