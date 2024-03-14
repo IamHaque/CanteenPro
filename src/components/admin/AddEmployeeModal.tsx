@@ -70,7 +70,13 @@ export default function AddEmployeeModal(props: AddEmployeeModalProps) {
           </Typography>
         )}
 
-        <Box noValidate sx={{ mt: 1 }} component="form" onSubmit={handleSubmit}>
+        <Box
+          noValidate
+          width="100%"
+          sx={{ mt: 3 }}
+          component="form"
+          onSubmit={handleSubmit}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField

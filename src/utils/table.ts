@@ -12,6 +12,8 @@ interface ISmartTableHeaderCell {
 interface IEmployee extends ISmartTable {
   id: number;
   name: string;
+  email: string;
+  userId: string;
   balance: number;
 }
 
@@ -26,20 +28,13 @@ interface ITransaction extends ISmartTable {
 
 interface IProduct extends ISmartTable {
   id: number;
-  name: string;
-  img?: string;
+  title: string;
   price: number;
+  quantity: number;
   category: string;
+  productId: string;
+  thumbnail?: string;
   description: string;
-}
-
-// Function to create an employee object
-function createEmployee(id: number, name: string, balance: number): IEmployee {
-  return {
-    id,
-    name,
-    balance,
-  };
 }
 
 // Function to create a transaction object
@@ -73,23 +68,6 @@ function createEmployeeTransaction(
     quantity: quantity,
     amount: amount,
     date: date,
-  };
-}
-
-// Function to create a product object
-function createProduct(
-  id: number,
-  name: string,
-  price: number,
-  category: string,
-  description: string
-): IProduct {
-  return {
-    id: id,
-    name: name,
-    price: price,
-    category: category,
-    description: description,
   };
 }
 
@@ -138,8 +116,6 @@ function stableSort<T>(
 export {
   stableSort,
   getComparator,
-  createProduct,
-  createEmployee,
   descendingComparator,
   createAdminTransaction,
   createEmployeeTransaction,

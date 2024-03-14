@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {
   TableRow,
   TableCell,
@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TablePagination,
+  Radio,
 } from '@mui/material';
 
 import SmartTableHeader from './SmartTableHeader';
@@ -29,17 +30,25 @@ export interface ISmartTable extends ISmartTableRow {
   // Add additional properties specific to your table, if any
 }
 
+interface ButtonConfig {
+  title: string;
+  icon: ReactNode;
+  onClick: (selectedRowIds: readonly number[]) => void;
+}
+
 interface SmartTableProps<T extends ISmartTable> {
   title: string;
   dense: boolean;
   ariaLabel?: string;
-  actionTitle?: string;
   rows: readonly T[];
+  actionTitle?: string;
+  singleSelection: boolean;
   disableSelection: boolean;
   disablePagination: boolean;
+  headerButtons?: ButtonConfig[];
   headCells: ISmartTableHeaderCell[];
+  onDeleteClick?: (selectedRowIds: readonly number[]) => void;
   onActionClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  onDeleteClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function SmartTable<T extends ISmartTable>(
@@ -52,10 +61,12 @@ export default function SmartTable<T extends ISmartTable>(
     headCells,
     ariaLabel,
     actionTitle,
-    disableSelection,
-    disablePagination,
+    headerButtons,
     onActionClick,
     onDeleteClick,
+    singleSelection,
+    disableSelection,
+    disablePagination,
   } = props;
   const initialRowsPerPage = disablePagination ? rows.length : 5;
 
@@ -75,7 +86,7 @@ export default function SmartTable<T extends ISmartTable>(
   };
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (disableSelection) return;
+    if (singleSelection || disableSelection) return;
 
     if (event.target.checked) {
       const newSelected = rows.map((n) => Number(n.id));
@@ -91,17 +102,25 @@ export default function SmartTable<T extends ISmartTable>(
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+    if (singleSelection) {
+      if (selectedIndex < 0) {
+        newSelected = [id];
+      } else {
+        newSelected = [];
+      }
+    } else {
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, id);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1)
+        );
+      }
     }
 
     setSelected(newSelected);
@@ -133,11 +152,27 @@ export default function SmartTable<T extends ISmartTable>(
     [rows, order, orderBy, page, rowsPerPage]
   );
 
+  const visibleColumns = (
+    [columnName, columnValue]: [string, string | number],
+    index: number
+  ) => {
+    const showCell = headCells.find((headCell) => headCell.id === columnName);
+    if (!showCell) return;
+    return (
+      <TableCell key={columnName.toString() + columnValue.toString() + index}>
+        {columnValue}
+      </TableCell>
+    );
+  };
+
   return (
     <React.Fragment>
       <SmartTableToolbar
         title={title}
+        selected={selected}
+        buttons={headerButtons}
         actionTitle={actionTitle}
+        setSelected={setSelected}
         numSelected={selected.length}
         onActionClick={onActionClick}
         onDeleteClick={onDeleteClick}
@@ -157,6 +192,7 @@ export default function SmartTable<T extends ISmartTable>(
             rowCount={rows.length}
             numSelected={selected.length}
             onRequestSort={handleRequestSort}
+            singleSelection={singleSelection}
             disableSelection={disableSelection}
             onSelectAllClick={handleSelectAllClick}
           />
@@ -184,20 +220,30 @@ export default function SmartTable<T extends ISmartTable>(
                 >
                   {!disableSelection && (
                     <TableCell padding="checkbox">
-                      <Checkbox
-                        size="small"
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
+                      {singleSelection ? (
+                        <Radio
+                          size="small"
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      ) : (
+                        <Checkbox
+                          size="small"
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      )}
                     </TableCell>
                   )}
 
-                  {Object.values(row).map((cell, index) => (
-                    <TableCell key={cell.toString() + index}>{cell}</TableCell>
-                  ))}
+                  {/* // headCells.findIndex({id}=>id===columnName) >= 0 */}
+                  {Object.entries(row).map(visibleColumns)}
                 </TableRow>
               );
             })}

@@ -16,6 +16,7 @@ interface SmartTableHeaderProps {
   rowCount: number;
   ariaLabel?: string;
   numSelected: number;
+  singleSelection: boolean;
   disableSelection: boolean;
   orderBy: string | number | symbol;
   headCells: ISmartTableHeaderCell[];
@@ -36,6 +37,7 @@ export default function SmartTableHeader(props: SmartTableHeaderProps) {
     headCells,
     numSelected,
     onRequestSort,
+    singleSelection,
     onSelectAllClick,
     disableSelection,
   } = props;
@@ -48,7 +50,7 @@ export default function SmartTableHeader(props: SmartTableHeaderProps) {
   return (
     <TableHead>
       <TableRow>
-        {!disableSelection && (
+        {!disableSelection && !singleSelection && (
           <TableCell padding="checkbox">
             <Checkbox
               color="primary"
@@ -62,6 +64,8 @@ export default function SmartTableHeader(props: SmartTableHeaderProps) {
             />
           </TableCell>
         )}
+
+        {!disableSelection && singleSelection && <TableCell />}
 
         {headCells.map((headCell) => (
           <TableCell

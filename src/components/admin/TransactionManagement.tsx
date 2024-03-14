@@ -103,6 +103,7 @@ export default function TransactionManagement() {
       dense={false}
       headCells={headCells}
       title="All Transactions"
+      singleSelection={false}
       disableSelection={true}
       disablePagination={false}
       rows={mockTransactionData}

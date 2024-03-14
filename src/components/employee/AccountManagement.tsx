@@ -1,5 +1,5 @@
 import {
-  IEmployeeTransaction,
+  ITransaction,
   ISmartTableHeaderCell,
   createEmployeeTransaction,
 } from '../../utils/table';
@@ -40,7 +40,7 @@ const headCells: ISmartTableHeaderCell[] = [
 ];
 
 // Mock data for employee transactions
-const mockTransactionData: IEmployeeTransaction[] = [
+const mockTransactionData: ITransaction[] = [
   createEmployeeTransaction(1, 'Sandwich', 2, 5.99, '2024-02-28'),
   createEmployeeTransaction(2, 'Coffee', 3, 2.49, '2024-02-28'),
   createEmployeeTransaction(3, 'Salad', 1, 7.99, '2024-02-27'),
@@ -78,6 +78,7 @@ export default function AccountManagement() {
     <SmartTable
       dense={false}
       headCells={headCells}
+      singleSelection={false}
       disableSelection={true}
       disablePagination={false}
       rows={mockTransactionData}

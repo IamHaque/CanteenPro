@@ -1,18 +1,37 @@
+import { ReactNode } from 'react';
+
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Toolbar, alpha, Typography, Tooltip, IconButton } from '@mui/material';
+
+interface ButtonConfig {
+  title: string;
+  icon: ReactNode;
+  onClick: (selectedRowIds: readonly number[]) => void;
+}
 
 interface SmartTableToolbarProps {
   title: string;
   numSelected: number;
   actionTitle?: string;
+  buttons?: ButtonConfig[];
+  selected: readonly number[];
+  onDeleteClick?: (selectedRowIds: readonly number[]) => void;
+  setSelected: React.Dispatch<React.SetStateAction<readonly number[]>>;
   onActionClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  onDeleteClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function SmartTableToolbar(props: SmartTableToolbarProps) {
-  const { title, numSelected, actionTitle, onActionClick, onDeleteClick } =
-    props;
+  const {
+    title,
+    buttons,
+    selected,
+    setSelected,
+    numSelected,
+    actionTitle,
+    onActionClick,
+    onDeleteClick,
+  } = props;
 
   return (
     <Toolbar
@@ -49,9 +68,31 @@ export default function SmartTableToolbar(props: SmartTableToolbarProps) {
         </Typography>
       )}
 
+      {numSelected > 0 &&
+        buttons &&
+        buttons.map((button, index) => (
+          <Tooltip key={index} title={button.title}>
+            <IconButton
+              onClick={() => {
+                if (!button.onClick) return;
+                button.onClick(selected);
+              }}
+            >
+              {button.icon}
+            </IconButton>
+          </Tooltip>
+        ))}
+
       {numSelected > 0 && (
         <Tooltip title="Delete">
-          <IconButton onClick={onDeleteClick}>
+          <IconButton
+            color="error"
+            onClick={() => {
+              if (!onDeleteClick) return;
+              onDeleteClick(selected);
+              setSelected([]);
+            }}
+          >
             <DeleteIcon />
           </IconButton>
         </Tooltip>

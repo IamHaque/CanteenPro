@@ -64,7 +64,9 @@ function App() {
     };
 
     setUserThemeModel();
-    if (!isAuthenticated) {
+
+    const token = localStorage.getItem('token');
+    if (token && !isAuthenticated) {
       validateToken();
     }
     setIsInitialPageLoad(false);
@@ -77,6 +79,9 @@ function App() {
 
       // Store user data locally
       login({ name, userId, cartId, email, balance, isAdmin });
+    } else if (data?.error?.code === 403) {
+      // Clear token from local storage if it is invalidated
+      localStorage.removeItem('token');
     }
   }, [data]);
 
