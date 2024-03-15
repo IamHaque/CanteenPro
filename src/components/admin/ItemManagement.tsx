@@ -7,12 +7,10 @@ import SmartTable from '../common/Table/SmartTable';
 
 import { useAlertDialog, useApiRequest, useSnackbar } from '../../hooks';
 import { IProduct, ISmartTableHeaderCell } from '../../utils/table';
-import {
-  AllProductApiResponse,
-  DeletedProductApiResponse,
-} from '../../utils/auth.types';
+import { DeletedProductApiResponse } from '../../utils/auth.types';
 import AddEditProductModal from './AddEditProductModal';
 import AddToProductOfTheDayModal from './AddToProductOfTheDayModal';
+import { useAppStore } from '../../store';
 
 const headCells: ISmartTableHeaderCell[] = [
   {
@@ -55,16 +53,17 @@ const headCells: ISmartTableHeaderCell[] = [
 
 export default function ItemManagement() {
   const [refreshCount, setRefreshCount] = useState(0);
-  const [productData, setProductData] = useState<IProduct[]>([]);
   const [openAddToPOTDModal, setOpenAddToPOTDModal] = useState(false);
   const [productDataToUpdate, setProductDataToUpdate] = useState<IProduct>();
   const [openAddEditProductModal, setOpenAddEditProductModal] = useState(false);
 
   const { openDialog, AlertDialog } = useAlertDialog();
   const { SnackbarComponent, handleClick } = useSnackbar();
-  const { data, makeRequest } = useApiRequest<
-    AllProductApiResponse | DeletedProductApiResponse
-  >();
+  const { data, makeRequest } = useApiRequest<DeletedProductApiResponse>();
+
+  const allProducts = useAppStore.use.allProducts();
+  const getAllProducts = useAppStore.use.getAllProducts();
+  const getProductsOfTheDay = useAppStore.use.getProductsOfTheDay();
 
   const handleAddToPOTDModalClose = () => setOpenAddToPOTDModal(false);
   const handleAddEditProductModalOpen = () => setOpenAddEditProductModal(true);
@@ -78,7 +77,7 @@ export default function ItemManagement() {
       onClick: (selectedRowIds: readonly number[]) => {
         if (!selectedRowIds || selectedRowIds.length <= 0) return;
 
-        const productToAdd = productData.find(
+        const productToAdd = allProducts.find(
           (_, index) => index === selectedRowIds[0]
         );
 
@@ -94,7 +93,7 @@ export default function ItemManagement() {
       onClick: (selectedRowIds: readonly number[]) => {
         if (!selectedRowIds || selectedRowIds.length <= 0) return;
 
-        const productToUpdate = productData.find(
+        const productToUpdate = allProducts.find(
           (_, index) => index === selectedRowIds[0]
         );
 
@@ -109,7 +108,7 @@ export default function ItemManagement() {
   const handleProductDelete = (selectedRowIds: readonly number[]) => {
     if (!selectedRowIds || selectedRowIds.length <= 0) return;
 
-    const productToDelete = productData.find(
+    const productToDelete = allProducts.find(
       (_, index) => index === selectedRowIds[0]
     );
 
@@ -133,36 +132,13 @@ export default function ItemManagement() {
   };
 
   useEffect(() => {
-    const getAllProducts = async () => {
-      await makeRequest('http://localhost:3200/api/v1/product/', 'GET');
-    };
-
     getAllProducts();
   }, [refreshCount]);
 
   useEffect(() => {
-    const allProductResData = (data as AllProductApiResponse)?.data?.items;
-    const deletedProductResData = (data as DeletedProductApiResponse)?.data
-      ?.deleted;
+    const deletedProductResData = data?.data?.deleted;
 
-    if (allProductResData) {
-      const parsedAllProductResData = allProductResData.map(
-        (product, index): IProduct => {
-          return {
-            id: index,
-            title: product.title,
-            category: product.category,
-            price: product.price,
-            quantity: product.quantity,
-            description: product.description,
-            productId: product.productId,
-            thumbnail: product.thumbnail,
-          };
-        }
-      );
-
-      setProductData([...parsedAllProductResData]);
-    } else if (deletedProductResData) {
+    if (deletedProductResData) {
       handleClick('success', 'Product deleted!', 3000);
       setRefreshCount(refreshCount + 1);
     }
@@ -172,7 +148,7 @@ export default function ItemManagement() {
     <React.Fragment>
       <SmartTable
         dense={false}
-        rows={productData}
+        rows={allProducts}
         headCells={headCells}
         singleSelection={true}
         disableSelection={false}
@@ -203,6 +179,7 @@ export default function ItemManagement() {
         handleClose={handleAddToPOTDModalClose}
         handleSuccess={() => {
           handleClick('success', 'Product added!', 3000);
+          getProductsOfTheDay();
         }}
       />
 

@@ -7,12 +7,10 @@ import { IEmployee, ISmartTableHeaderCell } from '../../utils/table';
 import AddEmployeeModal from './AddEmployeeModal';
 import SmartTable from '../common/Table/SmartTable';
 
-import {
-  AllUserApiResponse,
-  DeleteUserApiResponse,
-} from '../../utils/auth.types';
+import { DeleteUserApiResponse } from '../../utils/auth.types';
 import { useAlertDialog, useApiRequest, useSnackbar } from '../../hooks';
 import UpdateEmployeeBalanceModal from './UpdateEmployeeBalanceModal';
+import { useAppStore } from '../../store';
 
 const headCells: ISmartTableHeaderCell[] = [
   {
@@ -37,7 +35,6 @@ const headCells: ISmartTableHeaderCell[] = [
 
 export default function EmployeeManagement() {
   const [refreshCount, setRefreshCount] = useState(0);
-  const [employeeData, setEmployeeData] = useState<IEmployee[]>([]);
   const [openAddEmployeeModal, setOpenAddEmployeeModal] = useState(false);
   const [openUpdateEmployeeBalanceModal, setOpenUpdateEmployeeBalanceModal] =
     useState(false);
@@ -45,9 +42,10 @@ export default function EmployeeManagement() {
 
   const { openDialog, AlertDialog } = useAlertDialog();
   const { SnackbarComponent, handleClick } = useSnackbar();
-  const { data, makeRequest } = useApiRequest<
-    AllUserApiResponse | DeleteUserApiResponse
-  >();
+  const { data, makeRequest } = useApiRequest<DeleteUserApiResponse>();
+
+  const allUsers = useAppStore.use.allUsers();
+  const getAllUsers = useAppStore.use.getAllUsers();
 
   const handleAddEmployeeModalOpen = () => setOpenAddEmployeeModal(true);
   const handleAddEmployeeModalClose = () => setOpenAddEmployeeModal(false);
@@ -61,7 +59,7 @@ export default function EmployeeManagement() {
       onClick: (selectedRowIds: readonly number[]) => {
         if (!selectedRowIds || selectedRowIds.length <= 0) return;
 
-        const employeeToUpdate = employeeData.find(
+        const employeeToUpdate = allUsers.find(
           (_, index) => index === selectedRowIds[0]
         );
 
@@ -76,7 +74,7 @@ export default function EmployeeManagement() {
   const handleEmployeeDelete = (selectedRowIds: readonly number[]) => {
     if (!selectedRowIds || selectedRowIds.length <= 0) return;
 
-    const employeeToDelete = employeeData.find(
+    const employeeToDelete = allUsers.find(
       (_, index) => index === selectedRowIds[0]
     );
 
@@ -100,33 +98,13 @@ export default function EmployeeManagement() {
   };
 
   useEffect(() => {
-    const getAllUsers = async () => {
-      await makeRequest('http://localhost:3200/api/v1/user/', 'GET');
-    };
-
     getAllUsers();
   }, [refreshCount]);
 
   useEffect(() => {
-    const allEmployeeResData = (data as AllUserApiResponse)?.data?.items;
-    const deletedEmployeeResData = (data as DeleteUserApiResponse)?.data
-      ?.deleted;
+    const deletedEmployeeResData = data?.data?.deleted;
 
-    if (allEmployeeResData) {
-      const parsedAllEmployeeResData = allEmployeeResData.map(
-        (user, index): IEmployee => {
-          return {
-            id: index,
-            name: user.name,
-            email: user.email,
-            userId: user.userId,
-            balance: user.balance,
-          };
-        }
-      );
-
-      setEmployeeData([...parsedAllEmployeeResData]);
-    } else if (deletedEmployeeResData) {
+    if (deletedEmployeeResData) {
       handleClick('success', 'Employee deleted!', 3000);
       setRefreshCount(refreshCount + 1);
     }
@@ -138,7 +116,7 @@ export default function EmployeeManagement() {
         dense={false}
         title="All Employees"
         headCells={headCells}
-        rows={employeeData}
+        rows={allUsers}
         singleSelection={true}
         disableSelection={false}
         disablePagination={false}

@@ -57,6 +57,7 @@ interface AllProductApiResponse {
     items: AllProductData[];
     totalCount: number;
   };
+  error: ErrorResponse;
 }
 
 interface AllPOTDData {
@@ -69,6 +70,7 @@ interface AllPOTDApiResponse {
     items: AllPOTDData[];
     totalCount: number;
   };
+  error: ErrorResponse;
 }
 
 interface AllUserApiResponse {
@@ -76,24 +78,33 @@ interface AllUserApiResponse {
     items: AllUserData[];
     totalCount: number;
   };
+  error: ErrorResponse;
 }
 interface DeleteUserApiResponse {
   data: {
     item: AllUserData;
     deleted: boolean;
   };
+  error: ErrorResponse;
 }
 interface UpdatedUserApiResponse {
   data: {
     item: AllUserData;
     updated: boolean;
   };
+  error: ErrorResponse;
 }
 
 interface InsertedProductApiResponse {
   data: {
     item: AllProductData;
     added: boolean;
+  };
+  error: ErrorResponse;
+}
+interface BuyProductApiResponse {
+  data: {
+    bought: boolean;
   };
   error: ErrorResponse;
 }
@@ -125,4 +136,5 @@ export type {
   UpdatedProductApiResponse,
   DeletedProductApiResponse,
   AllPOTDApiResponse,
+  BuyProductApiResponse,
 };

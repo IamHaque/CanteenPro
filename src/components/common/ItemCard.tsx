@@ -1,10 +1,11 @@
 import {
-  Button,
   Card,
-  CardActions,
-  CardContent,
+  Button,
   CardMedia,
   Typography,
+  CardActions,
+  CardContent,
+  Stack,
 } from '@mui/material';
 
 import { IProduct } from '../../utils/table';
@@ -42,10 +43,22 @@ export default function ItemCard(props: ItemCardProps) {
       </CardContent>
 
       {!hideActions && (
-        <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            $ {product.price}
-          </Typography>
+        <CardActions
+          sx={{
+            display: 'flex',
+            alignItems: 'stretch',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Stack>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              $ {product.price}
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
+              {product.quantity} items in stock
+            </Typography>
+          </Stack>
 
           {onActionClick && (
             <Button
@@ -56,7 +69,7 @@ export default function ItemCard(props: ItemCardProps) {
                 onActionClick(product);
               }}
             >
-              Buy
+              Buy Now
             </Button>
           )}
         </CardActions>
