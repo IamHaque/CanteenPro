@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Skeleton, Typography } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Icon,
+  Paper,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 
 import { ItemCard } from '../common';
 import { useSnackbar } from '../../hooks';
-import { useAppStore } from '../../store';
+import { useAppStore, useAuthStore } from '../../store';
 import { IProduct } from '../../utils/table';
 import BuyProductModal from './BuyProductModal';
 
-const skeletonData = [0, 0, 0, 0, 0, 0];
+const skeletonData = [0, 0, 0, 0];
 
 export default function PopularItemManagement() {
   const [productToBuy, setProductToBuy] = useState<IProduct>();
@@ -15,8 +24,10 @@ export default function PopularItemManagement() {
 
   const { SnackbarComponent, handleClick } = useSnackbar();
 
+  const user = useAuthStore.use.user();
   const isBusy = useAppStore.use.isBusy();
   const productsOfTheDay = useAppStore.use.productsOfTheDay();
+  const getAllTransactions = useAppStore.use.getAllTransactions();
   const getProductsOfTheDay = useAppStore.use.getProductsOfTheDay();
 
   const handleBuyProductModalOpen = () => setOpenBuyProductModal(true);
@@ -36,6 +47,25 @@ export default function PopularItemManagement() {
       <Typography mb={2} variant="h5" component="h2">
         Items of the Day
       </Typography>
+
+      {!isBusy && productsOfTheDay.length <= 0 && (
+        <Paper sx={{ mb: 2 }}>
+          <Stack
+            py={5}
+            gap={2}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Icon color="warning" sx={{ fontSize: 128 }}>
+              <ReportGmailerrorredIcon fontSize="inherit" />
+            </Icon>
+            <Typography variant="h6" component="h3">
+              No items found in Today's menu!
+            </Typography>
+          </Stack>
+        </Paper>
+      )}
 
       <Grid container spacing={2}>
         {isBusy &&
@@ -68,6 +98,7 @@ export default function PopularItemManagement() {
         handleSuccess={() => {
           handleClick('success', 'Product bought!', 3000);
           getProductsOfTheDay();
+          getAllTransactions(user?.isAdmin || false);
         }}
       />
 

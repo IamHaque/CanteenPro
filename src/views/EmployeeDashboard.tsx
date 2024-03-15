@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Paper, Typography } from '@mui/material';
 
 import {
-  AccountManagement,
   TransactionManagement,
   PopularItemManagement,
 } from '../components/employee';
@@ -65,7 +64,7 @@ function EmployeeDashboard() {
                   Wallet Balance
                 </Typography>
                 <Typography component="p" variant="h4">
-                  $ {user?.balance || 0}
+                  $ {(user?.balance || 0).toFixed(2)}
                 </Typography>
               </Paper>
             </Grid>
@@ -78,15 +77,9 @@ function EmployeeDashboard() {
             ></Grid>
           </Grid>
 
-          <Grid item xs={12} lg={6}>
+          <Grid item xs={12}>
             <Paper>
               <TransactionManagement />
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} lg={6}>
-            <Paper>
-              <AccountManagement />
             </Paper>
           </Grid>
 

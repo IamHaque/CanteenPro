@@ -60,6 +60,29 @@ interface AllProductApiResponse {
   error: ErrorResponse;
 }
 
+interface Transaction {
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    name: string;
+    userId: string;
+  };
+  product: {
+    price: number;
+    title: string;
+    productId: string;
+  };
+}
+
+interface TransactionApiResponse {
+  data: {
+    items: Transaction[];
+    totalCount: number;
+  };
+  error: ErrorResponse;
+}
+
 interface AllPOTDData {
   quantity: number;
   product: AllProductData;
@@ -104,6 +127,7 @@ interface InsertedProductApiResponse {
 }
 interface BuyProductApiResponse {
   data: {
+    balance: number;
     bought: boolean;
   };
   error: ErrorResponse;
@@ -137,4 +161,6 @@ export type {
   DeletedProductApiResponse,
   AllPOTDApiResponse,
   BuyProductApiResponse,
+  TransactionApiResponse,
+  Transaction,
 };

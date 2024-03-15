@@ -17,7 +17,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useApiRequest } from '../../hooks';
 import { IProduct } from '../../utils/table';
 import { BuyProductApiResponse } from '../../utils/auth.types';
-import { useAuthStore } from '../../store';
+import { User, useAuthStore } from '../../store';
 
 interface BuyProductModalModalProps {
   open: boolean;
@@ -33,6 +33,7 @@ export default function BuyProductModalModal(props: BuyProductModalModalProps) {
   const [quantity, setQuantity] = useState(1);
 
   const user = useAuthStore.use.user();
+  const updateUser = useAuthStore.use.updateUser();
 
   const { data, loading, makeRequest } = useApiRequest<BuyProductApiResponse>();
 
@@ -52,7 +53,7 @@ export default function BuyProductModalModal(props: BuyProductModalModalProps) {
     const formData = new FormData(event.currentTarget);
 
     await makeRequest(
-      `http://localhost:3200/api/v1/product/buy/${productData?.productId}`,
+      `http://localhost:3200/api/v1/transaction/${productData?.productId}`,
       'POST',
       {
         quantity: formData.get('quantity'),
@@ -69,6 +70,7 @@ export default function BuyProductModalModal(props: BuyProductModalModalProps) {
 
   useEffect(() => {
     if (data?.data?.bought) {
+      updateUser({ balance: data?.data?.balance } as User);
       handleClose();
       handleSuccess();
     } else if (data?.error) {

@@ -15,39 +15,28 @@ import { useAppStore } from '../../store';
 const headCells: ISmartTableHeaderCell[] = [
   {
     id: 'id',
-    numeric: false,
     label: 'Product Id',
-    disablePadding: false,
   },
   {
     id: 'title',
-    numeric: false,
     label: 'Product Name',
-    disablePadding: false,
   },
   {
     id: 'category',
-    numeric: false,
     label: 'Category',
-    disablePadding: false,
   },
   {
     id: 'price',
-    numeric: false,
     label: 'Price',
-    disablePadding: false,
+    type: 'currency',
   },
   {
     id: 'quantity',
-    numeric: false,
     label: 'Quantity',
-    disablePadding: false,
   },
   {
     id: 'description',
-    numeric: false,
     label: 'Description',
-    disablePadding: false,
   },
 ];
 
@@ -179,6 +168,7 @@ export default function ItemManagement() {
         handleClose={handleAddToPOTDModalClose}
         handleSuccess={() => {
           handleClick('success', 'Product added!', 3000);
+          getAllProducts();
           getProductsOfTheDay();
         }}
       />

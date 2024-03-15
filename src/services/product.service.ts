@@ -1,25 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AllPOTDApiResponse, AllProductApiResponse } from './auth.types';
-import { IPOTD, IProduct } from './table';
-
-const BASE_URL = 'http://localhost:3200/api/v1';
-const API_KEY = 'LhPRmQ2iKnQsGpAanoyAU8c3qgc4fydlcw9Z';
-
-function getHeaders() {
-  const token = localStorage.getItem('token');
-
-  return {
-    ApiKey: API_KEY,
-    'Content-Type': 'application/json',
-    Authorization: token ? `Bearer ${token}` : '',
-  };
-}
+import { CommonService } from './';
+import { IPOTD, IProduct } from '../utils/table';
+import { AllPOTDApiResponse, AllProductApiResponse } from '../utils/auth.types';
 
 async function getAllProducts(): Promise<IProduct[]> {
   try {
-    const response = await fetch(`${BASE_URL}/product/`, {
+    const response = await fetch(`${CommonService.BASE_URL}/product/`, {
       method: 'GET',
-      headers: getHeaders(),
+      headers: CommonService.getHeaders(),
     });
 
     const responseData = (await response.json()) as AllProductApiResponse;
@@ -46,9 +34,9 @@ async function getAllProducts(): Promise<IProduct[]> {
 
 async function getProductsOfTheDay(): Promise<IPOTD[]> {
   try {
-    const response = await fetch(`${BASE_URL}/product/today/`, {
+    const response = await fetch(`${CommonService.BASE_URL}/product/today/`, {
       method: 'GET',
-      headers: getHeaders(),
+      headers: CommonService.getHeaders(),
     });
 
     const responseData = (await response.json()) as AllPOTDApiResponse;

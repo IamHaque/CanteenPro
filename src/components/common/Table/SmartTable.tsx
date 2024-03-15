@@ -9,6 +9,7 @@ import {
   TablePagination,
   Radio,
 } from '@mui/material';
+import moment from 'moment';
 
 import SmartTableHeader from './SmartTableHeader';
 import SmartTableToolbar from './SmartTableToolbar';
@@ -152,19 +153,6 @@ export default function SmartTable<T extends ISmartTable>(
     [rows, order, orderBy, page, rowsPerPage]
   );
 
-  const visibleColumns = (
-    [columnName, columnValue]: [string, string | number],
-    index: number
-  ) => {
-    const showCell = headCells.find((headCell) => headCell.id === columnName);
-    if (!showCell) return;
-    return (
-      <TableCell key={columnName.toString() + columnValue.toString() + index}>
-        {columnValue}
-      </TableCell>
-    );
-  };
-
   return (
     <React.Fragment>
       <SmartTableToolbar
@@ -198,55 +186,83 @@ export default function SmartTable<T extends ISmartTable>(
           />
 
           <TableBody>
-            {visibleRows.map((row, index) => {
-              const isItemSelected = isSelected(Number(row.id));
-              const labelId = `smart-table-checkbox-${index}`;
+            {rows.length <= 0 && (
+              <TableRow>
+                <TableCell colSpan={headCells.length + 1} align="center">
+                  No data available
+                </TableCell>
+              </TableRow>
+            )}
 
-              return (
-                <TableRow
-                  hover={disableSelection ? false : true}
-                  onClick={(event) => handleClick(event, Number(row.id))}
-                  role="checkbox"
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={row.id}
-                  selected={isItemSelected}
-                  sx={{
-                    cursor: disableSelection ? 'auto' : 'pointer',
-                    '&:last-child td, &:last-child th': disablePagination
-                      ? { border: 0 }
-                      : {},
-                  }}
-                >
-                  {!disableSelection && (
-                    <TableCell padding="checkbox">
-                      {singleSelection ? (
-                        <Radio
-                          size="small"
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      ) : (
-                        <Checkbox
-                          size="small"
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      )}
-                    </TableCell>
-                  )}
+            {rows.length > 0 &&
+              visibleRows.map((row, index) => {
+                const isItemSelected = isSelected(Number(row.id));
+                const labelId = `smart-table-checkbox-${index}`;
 
-                  {/* // headCells.findIndex({id}=>id===columnName) >= 0 */}
-                  {Object.entries(row).map(visibleColumns)}
-                </TableRow>
-              );
-            })}
+                return (
+                  <TableRow
+                    hover={disableSelection ? false : true}
+                    onClick={(event) => handleClick(event, Number(row.id))}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.id}
+                    selected={isItemSelected}
+                    sx={{
+                      cursor: disableSelection ? 'auto' : 'pointer',
+                      '&:last-child td, &:last-child th': disablePagination
+                        ? { border: 0 }
+                        : {},
+                    }}
+                  >
+                    {!disableSelection && (
+                      <TableCell padding="checkbox">
+                        {singleSelection ? (
+                          <Radio
+                            size="small"
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        ) : (
+                          <Checkbox
+                            size="small"
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        )}
+                      </TableCell>
+                    )}
+
+                    {headCells.map(({ id, type }, index) => {
+                      const cell = row[id];
+                      if (cell === undefined) return;
+
+                      let cellValue = cell.toString();
+
+                      if (type === 'currency') {
+                        cellValue = '$ ' + parseFloat(cellValue).toFixed(2);
+                      } else if (type === 'date') {
+                        cellValue = moment(cellValue)
+                          .format('hh:mm a DD MMM, YYYY')
+                          .toString();
+                      }
+
+                      return (
+                        <TableCell key={cell.toString() + index}>
+                          {cellValue}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+
             {emptyRows > 0 && (
               <TableRow
                 style={{

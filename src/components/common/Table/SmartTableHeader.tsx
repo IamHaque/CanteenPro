@@ -69,9 +69,9 @@ export default function SmartTableHeader(props: SmartTableHeaderProps) {
 
         {headCells.map((headCell) => (
           <TableCell
+            align="left"
+            padding="normal"
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel

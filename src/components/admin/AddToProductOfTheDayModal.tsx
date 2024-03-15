@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
@@ -20,6 +20,8 @@ export default function AddToProductOfTheDayModal(
 ) {
   const { open, productData, handleClose, handleSuccess } = props;
 
+  const [error, setError] = useState('');
+
   const { data, loading, makeRequest } =
     useApiRequest<InsertedProductApiResponse>();
 
@@ -37,9 +39,17 @@ export default function AddToProductOfTheDayModal(
   };
 
   useEffect(() => {
+    if (open) {
+      setError('');
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (data?.data?.added) {
       handleClose();
       handleSuccess();
+    } else if (data?.error) {
+      setError(data?.error?.message);
     }
   }, [data]);
 
@@ -66,7 +76,7 @@ export default function AddToProductOfTheDayModal(
         }}
       >
         <Typography component="h1" variant="h5">
-          Update Employee Wallet
+          Add to Today's Menu
         </Typography>
 
         <Box
@@ -107,6 +117,18 @@ export default function AddToProductOfTheDayModal(
               <Button fullWidth type="submit" variant="contained">
                 Add
               </Button>
+            )}
+
+            {error !== '' && (
+              <Typography
+                mt={2}
+                mb={0}
+                color="error"
+                align="center"
+                variant="body1"
+              >
+                {error}
+              </Typography>
             )}
           </Box>
         </Box>

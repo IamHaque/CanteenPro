@@ -15,21 +15,16 @@ import { useAppStore } from '../../store';
 const headCells: ISmartTableHeaderCell[] = [
   {
     id: 'id',
-    numeric: false,
     label: 'Employee ID',
-    disablePadding: false,
   },
   {
     id: 'name',
-    numeric: false,
     label: 'Employee Name',
-    disablePadding: false,
   },
   {
     id: 'balance',
-    numeric: false,
     label: 'Wallet Balance',
-    disablePadding: false,
+    type: 'currency',
   },
 ];
 

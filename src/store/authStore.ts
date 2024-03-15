@@ -14,6 +14,13 @@ const useAuthStoreBase = create<AuthState>((set) => ({
   logout: () => set(() => ({ isAuthenticated: false, user: null })),
   login: (userData: User | null) =>
     set(() => ({ user: userData, isAuthenticated: true })),
+  updateUser: (userData) =>
+    set((state) => ({
+      user: {
+        ...state.user,
+        ...userData,
+      },
+    })),
 }));
 
 export default useAuthStoreBase;

@@ -5,8 +5,7 @@ type TOrder = 'asc' | 'desc';
 interface ISmartTableHeaderCell {
   id: string;
   label: string;
-  numeric: boolean;
-  disablePadding: boolean;
+  type?: 'date' | 'currency';
 }
 
 interface IEmployee extends ISmartTable {
@@ -18,12 +17,15 @@ interface IEmployee extends ISmartTable {
 }
 
 interface ITransaction extends ISmartTable {
-  productName: string;
-  amount: number;
-  date: string;
   id: number;
-  saleBy?: string;
-  quantity?: number;
+  name: string;
+  price: number;
+  title: string;
+  userId: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  productId: string;
 }
 
 interface IProduct extends ISmartTable {
@@ -40,40 +42,6 @@ interface IProduct extends ISmartTable {
 interface IPOTD {
   quantity: number;
   product: IProduct;
-}
-
-// Function to create a transaction object
-function createAdminTransaction(
-  id: number,
-  productName: string,
-  saleBy: string,
-  amount: number,
-  date: string
-): ITransaction {
-  return {
-    id: id,
-    productName: productName,
-    saleBy: saleBy,
-    amount: amount,
-    date: date,
-  };
-}
-
-// Function to create a transaction object
-function createEmployeeTransaction(
-  id: number,
-  productName: string,
-  quantity: number,
-  amount: number,
-  date: string
-): ITransaction {
-  return {
-    id: id,
-    productName: productName,
-    quantity: quantity,
-    amount: amount,
-    date: date,
-  };
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -118,13 +86,7 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-export {
-  stableSort,
-  getComparator,
-  descendingComparator,
-  createAdminTransaction,
-  createEmployeeTransaction,
-};
+export { stableSort, getComparator, descendingComparator };
 
 export type {
   TOrder,

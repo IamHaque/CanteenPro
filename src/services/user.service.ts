@@ -1,26 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { IEmployee } from './table';
-import { AllUserApiResponse } from './auth.types';
-
-const BASE_URL = 'http://localhost:3200/api/v1';
-const API_KEY = 'LhPRmQ2iKnQsGpAanoyAU8c3qgc4fydlcw9Z';
-
-function getHeaders() {
-  const token = localStorage.getItem('token');
-
-  return {
-    ApiKey: API_KEY,
-    'Content-Type': 'application/json',
-    Authorization: token ? `Bearer ${token}` : '',
-  };
-}
+import { CommonService } from './';
+import { IEmployee } from '../utils/table';
+import { AllUserApiResponse } from '../utils/auth.types';
 
 async function getAllUsers(): Promise<IEmployee[]> {
   try {
-    const response = await fetch(`${BASE_URL}/user/`, {
+    const response = await fetch(`${CommonService.BASE_URL}/user/`, {
       method: 'GET',
-      headers: getHeaders(),
+      headers: CommonService.getHeaders(),
     });
 
     const responseData = (await response.json()) as AllUserApiResponse;

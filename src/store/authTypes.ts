@@ -16,6 +16,7 @@ type AuthStateData = {
 interface AuthState extends AuthStateData {
   logout: () => void;
   login: (userData: AuthStateData['user']) => void;
+  updateUser: (userData: User) => void;
 }
 
 export type { User, AuthState, AuthStateData };

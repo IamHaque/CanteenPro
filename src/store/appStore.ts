@@ -2,13 +2,13 @@ import { create } from 'zustand';
 
 import { AppState, AppStateData } from './appTypes';
 
-import UserService from '../utils/user.service';
-import ProductService from '../utils/product.service';
+import { ProductService, UserService, TransactionService } from '../services';
 
 // define the initial state
 const initialState: AppStateData = {
   allUsers: [],
   allProducts: [],
+  allTransactions: [],
   productsOfTheDay: [],
 
   isBusy: false,
@@ -33,6 +33,13 @@ const useAppStoreBase = create<AppState>((set) => ({
     set(() => ({ isBusy: true }));
     const productsOfTheDay = await ProductService.getProductsOfTheDay();
     set(() => ({ isBusy: false, productsOfTheDay }));
+  },
+  getAllTransactions: async (isAdmin) => {
+    set(() => ({ isBusy: true }));
+    const allTransactions = await TransactionService.getAllTransactions(
+      isAdmin
+    );
+    set(() => ({ isBusy: false, allTransactions }));
   },
 
   setIsBusy: (isBusy) => set(() => ({ isBusy })),
