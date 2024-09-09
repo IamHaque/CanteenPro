@@ -7,6 +7,12 @@ import {
   PopularItemManagement,
 } from '../components/admin';
 
+const paperSx = {
+  height: '100%',
+  display: 'grid',
+  gridTemplateRows: 'auto 1fr auto',
+};
+
 function AdminDashboard() {
   return (
     <Box
@@ -23,19 +29,19 @@ function AdminDashboard() {
       <Container maxWidth="xl" sx={{ flexGrow: 1 }}>
         <Grid container spacing={3} paddingY={3}>
           <Grid item xs={12} xl={6}>
-            <Paper>
+            <Paper sx={paperSx}>
               <EmployeeManagement />
             </Paper>
           </Grid>
 
           <Grid item xs={12} xl={6}>
-            <Paper>
+            <Paper sx={paperSx}>
               <TransactionManagement />
             </Paper>
           </Grid>
 
           <Grid item xs={12} xl={12}>
-            <Paper>
+            <Paper sx={paperSx}>
               <ItemManagement />
             </Paper>
           </Grid>

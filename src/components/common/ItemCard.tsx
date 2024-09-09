@@ -20,7 +20,13 @@ export default function ItemCard(props: ItemCardProps) {
   const { product, hideActions, onActionClick } = props;
 
   return (
-    <Card>
+    <Card
+      sx={{
+        height: '100%',
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr auto',
+      }}
+    >
       <CardMedia
         component="img"
         alt={product.title}
@@ -45,8 +51,10 @@ export default function ItemCard(props: ItemCardProps) {
       {!hideActions && (
         <CardActions
           sx={{
+            pb: 2,
+            px: 2,
             display: 'flex',
-            alignItems: 'stretch',
+            alignItems: 'end',
             justifyContent: 'space-between',
           }}
         >
@@ -62,9 +70,7 @@ export default function ItemCard(props: ItemCardProps) {
 
           {onActionClick && (
             <Button
-              size="small"
               disableElevation
-              variant="contained"
               onClick={() => {
                 onActionClick(product);
               }}
