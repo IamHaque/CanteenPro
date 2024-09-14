@@ -105,7 +105,7 @@ export default function UpdateEmployeeBalanceModal(
               </LoadingButton>
             ) : (
               <Button fullWidth type="submit" variant="contained">
-                Update Balace
+                Update Balance
               </Button>
             )}
           </Box>
