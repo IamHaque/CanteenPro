@@ -33,7 +33,7 @@ const useApiRequest = <T,>() => {
 
       const responseData = await response.json();
 
-      if (!response.ok && !responseData?.error) {
+      if (!response.ok || responseData?.error) {
         throw new Error('Failed to fetch data');
       }
 
