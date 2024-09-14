@@ -115,7 +115,10 @@ function Header() {
             {NAV_LINKS.map(renderNavLinks)}
             {isAuthenticated && (
               <Button
-                onClick={logout}
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  logout();
+                }}
                 sx={{ color: 'white', display: 'block' }}
               >
                 Logout
