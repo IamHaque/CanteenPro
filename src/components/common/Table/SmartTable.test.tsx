@@ -148,9 +148,7 @@ describe('SmartTable Component', () => {
       />
     );
 
-    const formattedDate = moment(sampleRows[0].date).format(
-      'hh:mm a DD MMM, YYYY'
-    );
+    const formattedDate = moment(sampleRows[0].date).fromNow();
     expect(screen.getByText(formattedDate)).toBeInTheDocument();
   });
 });

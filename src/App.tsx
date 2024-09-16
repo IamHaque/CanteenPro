@@ -23,7 +23,8 @@ import { useAppStore, useAuthStore } from './store';
 import { LoginWithTokenApiResponse } from './utils/auth.types';
 
 function App() {
-  const { data, makeRequest } = useApiRequest<LoginWithTokenApiResponse>();
+  const { data, error, makeRequest } =
+    useApiRequest<LoginWithTokenApiResponse>();
   const [isInitialPageLoad, setIsInitialPageLoad] = useState(true);
 
   const user = useAuthStore.use.user();
@@ -81,12 +82,12 @@ function App() {
       // Store user data locally
       setIsInitialPageLoad(false);
       login({ name, userId, cartId, email, balance, isAdmin });
-    } else if (data?.error?.code === 403) {
+    } else if (data?.error?.code === 403 || error) {
       // Clear token from local storage if it is invalidated
       setIsInitialPageLoad(false);
       localStorage.removeItem('token');
     }
-  }, [data]);
+  }, [data, error]);
 
   return (
     <ThemeProvider theme={theme}>

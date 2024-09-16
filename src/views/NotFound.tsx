@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function NotFound() {
   return (
@@ -14,7 +14,9 @@ export default function NotFound() {
       <h1>404 - Page Not Found</h1>
       <p>The page you are looking for does not exist.</p>
 
-      <Link to="/">Go to Home</Link>
+      <Link to="/" variant="body2" component={RouterLink}>
+        Go to Home
+      </Link>
     </Box>
   );
 }

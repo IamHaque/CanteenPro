@@ -248,9 +248,7 @@ export default function SmartTable<T extends ISmartTable>(
                       if (type === 'currency') {
                         cellValue = '$ ' + parseFloat(cellValue).toFixed(2);
                       } else if (type === 'date') {
-                        cellValue = moment(cellValue)
-                          .format('hh:mm a DD MMM, YYYY')
-                          .toString();
+                        cellValue = moment(cellValue).fromNow().toString();
                       }
 
                       return (

@@ -65,14 +65,12 @@ describe('TransactionManagement Component', () => {
           screen.getByText(transaction.quantity.toString())
         ).toBeInTheDocument();
         expect(
-          screen.getByText(`$ ${transaction.price.toFixed(2)}`)
+          screen.getByText(
+            `$ ${(transaction.price * transaction.quantity).toFixed(2)}`
+          )
         ).toBeInTheDocument();
         expect(
-          screen.getByText(
-            moment(transaction.createdAt)
-              .format('hh:mm a DD MMM, YYYY')
-              .toString()
-          )
+          screen.getByText(moment(transaction.createdAt).fromNow().toString())
         ).toBeInTheDocument();
       });
     });

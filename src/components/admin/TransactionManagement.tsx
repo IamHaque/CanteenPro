@@ -51,7 +51,10 @@ export default function TransactionManagement() {
       singleSelection={false}
       disableSelection={true}
       disablePagination={false}
-      rows={allTransactions}
+      rows={allTransactions.map((t) => ({
+        ...t,
+        price: Number(t.price) * Number(t.quantity),
+      }))}
     />
   );
 }
