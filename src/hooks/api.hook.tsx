@@ -5,6 +5,7 @@ interface ApiResponse<T> {
   data: T | null;
   loading: boolean;
   error: string | null;
+  reset: () => void;
   makeRequest: (url: string, method: string, body?: any) => Promise<void>;
 }
 
@@ -33,7 +34,7 @@ const useApiRequest = <T,>() => {
 
       const responseData = await response.json();
 
-      if (!response.ok || responseData?.error) {
+      if (!response.ok && !responseData?.error) {
         throw new Error('Failed to fetch data');
       }
 
@@ -45,7 +46,13 @@ const useApiRequest = <T,>() => {
     }
   };
 
-  return { loading, error, data, makeRequest } as ApiResponse<T>;
+  const reset = () => {
+    setData(null);
+    setError(null);
+    setLoading(false);
+  };
+
+  return { loading, error, data, reset, makeRequest } as ApiResponse<T>;
 };
 
 export default useApiRequest;

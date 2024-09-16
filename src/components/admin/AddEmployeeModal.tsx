@@ -16,7 +16,8 @@ interface AddEmployeeModalProps {
 export default function AddEmployeeModal(props: AddEmployeeModalProps) {
   const { open, handleClose, handleSuccess } = props;
 
-  const { data, loading, makeRequest } = useApiRequest<LoginApiResponse>();
+  const { data, loading, reset, makeRequest } =
+    useApiRequest<LoginApiResponse>();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,6 +38,10 @@ export default function AddEmployeeModal(props: AddEmployeeModalProps) {
       handleSuccess();
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!open) reset();
+  }, [open]);
 
   return (
     <Modal

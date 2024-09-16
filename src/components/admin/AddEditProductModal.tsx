@@ -23,7 +23,7 @@ export default function AddEditProductModal(props: AddEditProductModalProps) {
 
   const isAdding = productData === undefined;
 
-  const { data, loading, makeRequest } = useApiRequest<
+  const { data, loading, reset, makeRequest } = useApiRequest<
     InsertedProductApiResponse | UpdatedProductApiResponse
   >();
 
@@ -57,6 +57,10 @@ export default function AddEditProductModal(props: AddEditProductModalProps) {
       handleSuccess();
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!open) reset();
+  }, [open]);
 
   return (
     <Modal
